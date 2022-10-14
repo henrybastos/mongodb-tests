@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 const USERNAME = 'henryBastos';
-const PASSWORD = '4488ppttPPTT';
+const PASSWORD = '***'; 
 
 const URI = `mongodb+srv://${USERNAME}:${PASSWORD}@maincluster.rdy0alw.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -14,23 +14,26 @@ async function main () {
 
   try {
     await client.connect();
-    await listDatabases(client);
 
-    await insertNewItem(client, {
-      name: 'Charming house',
-      summary: 'A beautiful house in London.'
-    });
+    // await listDatabases(client);
 
-    await insertManyItems(client, [
-      {
-        name: 'John Doe',
-        age: 20
-      },
-      {
-        name: 'Jane Doe',
-        age: 25
-      },
-  ]);
+    // await insertNewItem(client, {
+    //   name: 'Charming house',
+    //   summary: 'A beautiful house in London.'
+    // });
+
+    // await insertManyItems(client, [
+    //   {
+    //     name: 'John Doe',
+    //     age: 20
+    //   },
+    //   {
+    //     name: 'Jane Doe',
+    //     age: 25
+    //   },
+    // ]);
+
+  await findSingleUser(client, 'John Doe');
   } catch (error) {
     console.error(error);
   } finally {
@@ -39,6 +42,8 @@ async function main () {
 }
 
 main().catch(console.error);
+
+// ---------- CREATE ---------- //
 
 async function insertNewItem (client, newItem) {
   const result = await client.db(DATABASES.TEST).collection("users").insertOne(newItem);
@@ -52,6 +57,19 @@ async function insertManyItems (client, newItems) {
   console.log(newItems);
 }
 
+// ---------- READ ---------- //
+
+async function findSingleUser (client, userName) {
+  const result = await client.db(DATABASES.TEST).collection('users').findOne({ name: userName });
+
+  if (result) {
+    console.log(`User with the name ${userName} found successfully!`);
+    console.log(result);
+  } else {
+    console.log(`No user with the name ${userName} was found. :/`);
+  }
+}
+
 async function listDatabases (client) {
   const databasesList = await client.db().admin().listDatabases();
 
@@ -61,3 +79,7 @@ async function listDatabases (client) {
     console.log(` - ${db.name}`);
   })
 }
+
+// ---------- UPDATE ---------- //
+
+// ---------- DELETE ---------- //
